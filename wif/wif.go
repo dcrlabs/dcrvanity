@@ -1,19 +1,28 @@
+// Copyright (c) 2015, 2018 The Decred Developers
 // Copyright (c) 2013, 2014 The btcsuite developers
-// Copyright (c) 2015 The Decred Developers
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
-package main
+package wif
 
 import (
 	"bytes"
 	"errors"
 
 	"github.com/decred/base58"
+	"github.com/decred/dcrd/chaincfg"
 	"github.com/decred/dcrd/chaincfg/chainhash"
 	"github.com/decred/dcrd/dcrec/secp256k1"
 	"github.com/decred/dcrd/dcrutil"
 )
+
+var curve = secp256k1.S256()
+
+// Curve returns a pointer to a copy of the elliptical curve.
+func Curve() *secp256k1.KoblitzCurve {
+	c := *curve
+	return &c
+}
 
 // ErrMalformedPrivateKey describes an error where a WIF-encoded private
 // key cannot be decoded due to being improperly formatted.  This may occur
@@ -43,7 +52,7 @@ type WIF struct {
 // as a string encoded in the Wallet Import Format.  The compress argument
 // specifies whether the address intended to be imported or exported was created
 // by serializing the public key compressed rather than uncompressed.
-func NewWIF(privKey secp256k1.PrivateKey) *WIF {
+func NewWIF(privKey secp256k1.PrivateKey, params *chaincfg.Params) *WIF {
 	return &WIF{0, privKey, params.PrivateKeyID}
 }
 
