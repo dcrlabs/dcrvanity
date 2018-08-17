@@ -2,3 +2,6 @@ dcrvanity
 *.exe
 .vscode/
 vendor/
+server
+mkkeypair
+mkkeypair.wasm
