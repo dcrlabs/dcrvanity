@@ -20,6 +20,7 @@ import (
 	"time"
 
 	//"github.com/davecgh/go-spew/spew"
+	"github.com/dcrlabs/dcrvanity/wif"
 	"github.com/decred/dcrd/chaincfg"
 	"github.com/decred/dcrd/chaincfg/chainec"
 	"github.com/decred/dcrd/dcrec/secp256k1"
@@ -108,7 +109,7 @@ searchloop:
 		}
 
 		// PubKeyHashAddrID (Ds) followed by ripemd160 hash of secp256k1 pubkey
-		addr0, err := dcrutil.NewAddressPubKeyHash(Hash160(pub.SerializeCompressed()),
+		addr0, err := dcrutil.NewAddressPubKeyHash(wif.Hash160(pub.SerializeCompressed()),
 			&params, chainec.ECTypeSecp256k1)
 		if err != nil {
 			return nil, nil, err
@@ -135,7 +136,7 @@ searchloop:
 					PublicKey: key0.PublicKey,
 					D:         key0.D,
 				}
-				privWifX := NewWIF(privX)
+				privWifX := wif.NewWIF(privX, &params)
 				fmt.Printf("Private key (WIF-encoded): %s\n", privWifX.String())
 				fmt.Println("Private key (secp256k1): ", privX)
 			}
@@ -150,7 +151,7 @@ searchloop:
 					PublicKey: key0.PublicKey,
 					D:         key0.D,
 				}
-				privWifX := NewWIF(privX)
+				privWifX := wif.NewWIF(privX, &params)
 				fmt.Printf("Private key (WIF-encoded): %s\n", privWifX.String())
 				fmt.Println("Private key (secp256k1): ", privX)
 			}
@@ -322,7 +323,6 @@ goroutineloop:
 		// Close the channel so multiple goroutines can get the message
 		fmt.Print("CTRL+C hit.  Terminating searchers.")
 		close(quit)
-		return
 	}()
 
 	// Allow each goroutine to receive the quit signal and finish up
@@ -331,10 +331,8 @@ goroutineloop:
 	if searchResult.priv != nil {
 		fmt.Printf("Addr: %s\n", searchResult.addr.EncodeAddress())
 		fmt.Println("Private key (secp256k1): ", searchResult.priv)
-		privWif := NewWIF(*searchResult.priv)
+		privWif := wif.NewWIF(*searchResult.priv, &params)
 		fmt.Println("Private key (WIF-encoded): ", privWif)
 		fmt.Println("You many now import this into your wallet via importprivkey.")
 	}
-
-	return
 }
