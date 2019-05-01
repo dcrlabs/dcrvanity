@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Jonathan Chappelow
+// Copyright (c) 2016-2019 Jonathan Chappelow
 // Copyright (c) 2015 The Decred Developers
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
@@ -22,7 +22,7 @@ import (
 	//"github.com/davecgh/go-spew/spew"
 	"github.com/dcrlabs/dcrvanity/wif"
 	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
+	"github.com/decred/dcrd/dcrec"
 	"github.com/decred/dcrd/dcrec/secp256k1"
 	"github.com/decred/dcrd/dcrutil"
 )
@@ -110,7 +110,7 @@ searchloop:
 
 		// PubKeyHashAddrID (Ds) followed by ripemd160 hash of secp256k1 pubkey
 		addr0, err := dcrutil.NewAddressPubKeyHash(wif.Hash160(pub.SerializeCompressed()),
-			&params, chainec.ECTypeSecp256k1)
+			&params, dcrec.STEcdsaSecp256k1)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -246,7 +246,7 @@ func main() {
 			fmt.Println("Error: Only specify one network.")
 			return
 		}
-		params = chaincfg.TestNet2Params
+		params = chaincfg.TestNet3Params
 	}
 	if *simnet {
 		params = chaincfg.SimNetParams

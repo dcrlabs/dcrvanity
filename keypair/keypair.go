@@ -11,7 +11,7 @@ import (
 
 	"github.com/dcrlabs/dcrvanity/wif"
 	"github.com/decred/dcrd/chaincfg"
-	"github.com/decred/dcrd/chaincfg/chainec"
+	"github.com/decred/dcrd/dcrec"
 	"github.com/decred/dcrd/dcrec/secp256k1"
 	"github.com/decred/dcrd/dcrutil"
 )
@@ -38,7 +38,7 @@ func KeyPairAddress(params *chaincfg.Params) (*ecdsa.PrivateKey, *secp256k1.Publ
 
 	// PubKeyHashAddrID (Ds) followed by ripemd160 hash of secp256k1 pubkey
 	addr, err := dcrutil.NewAddressPubKeyHash(wif.Hash160(pub.SerializeCompressed()),
-		params, chainec.ECTypeSecp256k1)
+		params, dcrec.STEcdsaSecp256k1)
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
